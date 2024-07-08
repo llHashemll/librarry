@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library System</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Library System</h1>
+    <h2>Test Endpoint</h2>
+    <button onclick="test()">Test</button>
+    <div id="testResult"></div>
+
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city"><br>
+        <button type="submit">Register</button>
+    </form>
+    <div id="registerResult"></div>
+
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername" name="username" required><br>
+        <label for="loginPassword">Password:</label>
+        <input type="password" id="loginPassword" name="password" required><br>
+        <button type="submit">Login</button>
+    </form>
+    <div id="loginResult"></div>
+
+    <script>
+        const SERVER = "http://127.0.0.1:5000";
+
+        const test = () => {
+            axios.get(SERVER + "/test")
+                .then(res => {
+                    document.getElementById('testResult').innerText = JSON.stringify(res.data);
+                })
+                .catch(err => {
+                    document.getElementById('testResult').innerText = err.message;
+                });
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const city = document.getElementById('city').value;
+
+            axios.post(SERVER + "/register", { username, password, city })
+                .then(res => {
+                    document.getElementById('registerResult').innerText = res.data.message;
+                })
+                .catch(err => {
+                    document.getElementById('registerResult').innerText = err.response.data.error;
+                });
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            axios.post(SERVER + "/login", { username, password })
+                .then(res => {
+                    document.getElementById('loginResult').innerText = res.data.message;
+                })
+                .catch(err => {
+                    document.getElementById('loginResult').innerText = err.response.data.error;
+                });
+        });
+    </script>
+</body>
+</html>
+
