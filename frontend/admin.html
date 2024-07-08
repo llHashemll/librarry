@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .book, .user, .loan {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            display: inline-block;
+            width: 200px;
+            text-align: center;
+        }
+        .book img {
+            max-width: 100%;
+            height: auto;
+        }
+        .availability {
+            font-weight: bold;
+            color: green;
+        }
+        .unavailable {
+            color: red;
+        }
+        #addBookForm {
+            display: none;
+            margin-top: 20px;
+        }
+        #userList, #loanedList, #lateLoanList {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="index.html"> Library</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-link nav-link" onclick="logout()">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mt-5">Welcome, Admin</h1>
+        <h2>All Books</h2>
+        <div id="bookList" class="row"></div>
+
+        <button class="btn btn-primary mb-3" onclick="toggleAddBookForm()">Add a New Book</button>
+        <button class="btn btn-primary mb-3" onclick="toggleList('userList', showAllUsers)">Show All Users</button>
+        <button class="btn btn-primary mb-3" onclick="toggleList('loanedList', showLoanedBooks)">Show All Loaned Books</button>
+        <button class="btn btn-primary mb-3" onclick="toggleList('lateLoanList', showLateLoans)">Show Late Loans</button>
+
+        <form id="addBookForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Book Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="author">Author:</label>
+                <input type="text" class="form-control" id="author" name="author" required>
+            </div>
+            <div class="form-group">
+                <label for="year_published"> Published:</label>
+                <input type="number" class="form-control" id="year_published" name="year_published" required>
+            </div>
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <input type="text" class="form-control" id="type" name="type" required>
+            </div>
+            <div class="form-group">
+                <label for="image">Book Image:</label>
+                <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-success">Add Book</button>
+        </form>
+
+        <div id="userList" class="row mt-3"></div>
+        <div id="loanedList" class="row mt-3"></div>
+        <div id="lateLoanList" class="row mt-3"></div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted"> Library</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const apiUrl = 'http://127.0.0.1:5000';
+
+        function toggleAddBookForm() {
+            const form = document.getElementById('addBookForm');
+            form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+        }
+
+        function toggleList(elementId, fetchFunction) {
+            const element = document.getElementById(elementId);
+            if (element.style.display === 'none') {
+                fetchFunction();
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+
+        async function fetchBooks() {
+            try {
+                const response = await axios.get(`${apiUrl}/books`);
+                const books = response.data;
+
+                const bookList = document.getElementById('bookList');
+                bookList.innerHTML = ''; // Clear the book list before appending new data
+                books.forEach(book => {
+                    const bookDiv = document.createElement('div');
+                    bookDiv.classList.add('col-md-3', 'book');
+                    bookDiv.innerHTML = `
+                        <img src="${apiUrl}/media/${book.filename}" alt="${book.name}">
+                        <h3>${book.name}</h3>
+                        <p>Author: ${book.author}</p>
+                        <p>Year Published: ${book.year_published}</p>
+                        <p class="availability ${book.available ? '' : 'unavailable'}">
+                            ${book.available ? 'Available' : 'Not Available'}
+                        </p>
+                        <button class="btn btn-danger" onclick="removeBook(${book.id})">Remove Book</button>
+                    `;
+                    bookList.appendChild(bookDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            }
+        }
+
+        async function removeBook(bookId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.post(`${apiUrl}/remove_book/${bookId}`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                alert(response.data.message);
+                fetchBooks(); // Refresh the book list after removing a book
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+        }
+
+        async function showAllUsers() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`${apiUrl}/display_all_users`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const users = response.data;
+                const userList = document.getElementById('userList');
+                userList.innerHTML = ''; // Clear the list before appending new data
+                users.forEach(user => {
+                    const userDiv = document.createElement('div');
+                    userDiv.classList.add('col-md-3', 'user');
+                    userDiv.innerHTML = `
+                        <h3>${user.full_name}</h3>
+                        <p>Email: ${user.email}</p>
+                        <p>Age: ${user.age}</p>
+                        <p>Role: ${user.role}</p>
+                        <p>Active: ${user.active}</p>
+                    `;
+                    userList.appendChild(userDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        async function showLoanedBooks() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`${apiUrl}/display_active_loaned_books`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const loans = response.data;
+                const loanedList = document.getElementById('loanedList');
+                loanedList.innerHTML = ''; // Clear the list before appending new data
+                loans.forEach(loan => {
+                    const loanDiv = document.createElement('div');
+                    loanDiv.classList.add('col-md-3', 'loan');
+                    loanDiv.innerHTML = `
+                        <h3>Loan ID: ${loan.id}</h3>
+                        <p>User: ${loan.user_name}</p>
+                        <p>Book: ${loan.book_name}</p>
+                        <p>Author: ${loan.author}</p>
+                        <p>Loan Date: ${loan.loan_date}</p>
+                        <p>Return Date: ${loan.return_date}</p>
+                    `;
+                    loanedList.appendChild(loanDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching loaned books:', error);
+            }
+        }
+
+        async function showLateLoans() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.get(`${apiUrl}/display_late_loans`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const loans = response.data;
+                const lateLoanList = document.getElementById('lateLoanList');
+                lateLoanList.innerHTML = ''; // Clear the list before appending new data
+                loans.forEach(loan => {
+                    const loanDiv = document.createElement('div');
+                    loanDiv.classList.add('col-md-3', 'loan');
+                    loanDiv.innerHTML = `
+                        <h3>Loan ID: ${loan.id}</h3>
+                        <p>User: ${loan.user_name}</p>
+                        <p>Book: ${loan.book_name}</p>
+                        <p>Author: ${loan.author}</p>
+                        <p>Loan Date: ${loan.loan_date}</p>
+                        <p>Return Date: ${loan.return_date}</p>
+                    `;
+                    lateLoanList.appendChild(loanDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching late loans:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token'); // Remove the token from local storage
+            window.location.replace('index.html'); // Redirect to index.html
+        }
+
+        document.getElementById('addBookForm').addEventListener('submit', async function(event) {
+            event.preventDefault();  // Prevent form from submitting and reloading the page
+
+            const formData = new FormData();
+            const bookData = JSON.stringify({
+                name: document.getElementById('name').value,
+                author: document.getElementById('author').value,
+                year_published: document.getElementById('year_published').value,
+                type: document.getElementById('type').value,
+            });
+
+            formData.append('data', bookData);
+            formData.append('image', document.getElementById('image').files[0]);
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await axios.post(`${apiUrl}/add_book`, formData, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                alert(response.data.message);
+                fetchBooks(); // Refresh the book list after adding a new book
+            } catch (error) {
+                alert(error.response.data.message);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', fetchBooks);
+    </script>
+</body>
+</html>
