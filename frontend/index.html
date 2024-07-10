@@ -3,55 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Library</title>
+    <title>Library</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f0f8f5;
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            background-color: #4CAF50;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar a {
+            color: white;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #45a049;
+        }
+        .main-content {
+            margin-left: 250px;
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+            border-color: #45a049;
+        }
         .book {
             border: 1px solid #ccc;
             padding: 10px;
             margin: 10px;
-            display: inline-block;
-            width: 200px;
+            background-color: white;
             text-align: center;
         }
         .book img {
             max-width: 100%;
             height: auto;
         }
+        @media (min-width: 576px) {
+            .book {
+                width: 48%;
+            }
+        }
+        @media (min-width: 768px) {
+            .book {
+                width: 32%;
+            }
+        }
+        @media (min-width: 992px) {
+            .book {
+                width: 24%;
+            }
+        }
+        footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="index.html">Online Library</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="register.html">Register</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="login.html">Login</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container">
-        <h1 class="mt-5"> Library</h1>
-        <button class="btn btn-primary mb-3" onclick="location.href='register.html'">Sign In</button>
-        <button class="btn btn-primary mb-3" onclick="location.href='login.html'">Login</button>
-
-        <h2>List of Books</h2>
-        <div id="bookList" class="row"></div>
+    <div class="sidebar">
+        <a class="navbar-brand" href="index.html">Oxsford Lib</a>
+        <a href="index.html">Home</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
     </div>
 
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container">
-            <span class="text-muted"> Library</span>
+    <div class="main-content">
+        <div class="container-custom text-center">
+            <h1 class="mt-5">IIII</h1>
+            <button class="btn btn-primary mb-3" onclick="location.href='register.html'">Sign In</button>
+            <button class="btn btn-primary mb-3" onclick="location.href='login.html'">Login</button>
+            <h1 class="mt-5">IIII</h1>
+
+         
         </div>
-    </footer>
+    </div>
+
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -65,10 +111,10 @@
                 const books = response.data;
 
                 const bookList = document.getElementById('bookList');
-                bookList.innerHTML = ''; // Clear the book list before appending new data
+                bookList.innerHTML = ''; // Clear 
                 books.forEach(book => {
                     const bookDiv = document.createElement('div');
-                    bookDiv.classList.add('col-md-3', 'book');
+                    bookDiv.classList.add('col-12', 'col-sm-6', 'col-md-4', 'col-lg-3', 'book');
                     bookDiv.innerHTML = `
                         <img src="${apiUrl}/media/${book.filename}" alt="${book.name}">
                         <h3>${book.name}</h3>
@@ -86,3 +132,4 @@
     </script>
 </body>
 </html>
+```

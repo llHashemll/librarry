@@ -5,45 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #e8f5e9; /* Light green background */
+            display: flex;
+            flex-direction: row;
+        }
+        .sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            background-color: #4caf50; /* Green color */
+            color: white;
+            padding: 1rem;
+        }
+        .sidebar a {
+            color: white;
+            display: block;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #388e3c;
+        }
+        .sidebar a.active {
+            background-color: #1b5e20;
+            font-weight: bold;
+        }
+        .content {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background-color: white; /* White background for the container */
+            padding: 2rem;
+            border-radius: 0.5rem; /* Rounded corners */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        }
+        .btn-success {
+            background-color: #388e3c;
+            border-color: #388e3c;
+        }
+        .btn-success:hover {
+            background-color: #2e7d32;
+            border-color: #2e7d32;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="index.html">Online Library</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="register.html">Register</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="login.html">Login</a>
-                </li>
-            </ul>
-        </div>
+    <nav class="sidebar">
+        <a class="navbar-brand" href="index.html">Oxsford lib</a>
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="register.html">Register</a>
+        <a class="nav-link active" href="login.html">Login</a>
     </nav>
 
-    <div class="container">
-        <h1 class="mt-5">Login</h1>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-success">Login</button>
-        </form>
-    </div>
-
-    <footer class="footer mt-auto py-3 bg-light">
+    <div class="content">
         <div class="container">
-            <span class="text-muted"> Library</span>
+            <h1>Login</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-success">Login</button>
+            </form>
         </div>
-    </footer>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -82,7 +116,7 @@
                     window.location.replace('user.html');
                 }
             } catch (error) {
-                alert(error.response.data.message);
+                alert(error.response ? error.response.data.message : 'An error occurred');
             }
         });
     </script>

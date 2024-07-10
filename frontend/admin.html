@@ -3,15 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin </title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #28a745;
+        }
+        .navbar-brand, .nav-link, .footer {
+            color: #fff !important;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
         .book, .user, .loan {
             border: 1px solid #ccc;
             padding: 10px;
-            margin: 10px;
-            display: inline-block;
-            width: 200px;
+            margin: 10px 0;
             text-align: center;
         }
         .book img {
@@ -32,11 +47,21 @@
         #userList, #loanedList, #lateLoanList {
             display: none;
         }
+        @media (min-width: 768px) {
+            .book, .user, .loan {
+                display: inline-block;
+                width: 200px;
+            }
+        }
+        .btn-success, .btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="index.html"> Library</a>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="index.html">Oxsford Lib </a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -50,14 +75,16 @@
     </nav>
 
     <div class="container">
-        <h1 class="mt-5">Welcome, Admin</h1>
-        <h2>All Books</h2>
+        <h1 class="mt-5">Welcome</h1>
+        
         <div id="bookList" class="row"></div>
 
-        <button class="btn btn-primary mb-3" onclick="toggleAddBookForm()">Add a New Book</button>
-        <button class="btn btn-primary mb-3" onclick="toggleList('userList', showAllUsers)">Show All Users</button>
-        <button class="btn btn-primary mb-3" onclick="toggleList('loanedList', showLoanedBooks)">Show All Loaned Books</button>
-        <button class="btn btn-primary mb-3" onclick="toggleList('lateLoanList', showLateLoans)">Show Late Loans</button>
+        <div class="mb-3">
+            <button class="btn btn-primary btn-block mb-2" onclick="toggleAddBookForm()">Add a New Book</button>
+            <button class="btn btn-primary btn-block mb-2" onclick="toggleList('userList', showAllUsers)">Show All Users</button>
+            <button class="btn btn-primary btn-block mb-2" onclick="toggleList('loanedList', showLoanedBooks)">Show All Loaned Books</button>
+            <button class="btn btn-primary btn-block mb-2" onclick="toggleList('lateLoanList', showLateLoans)">Show Late Loans</button>
+        </div>
 
         <form id="addBookForm" enctype="multipart/form-data">
             <div class="form-group">
@@ -69,7 +96,7 @@
                 <input type="text" class="form-control" id="author" name="author" required>
             </div>
             <div class="form-group">
-                <label for="year_published"> Published:</label>
+                <label for="year_published">Published:</label>
                 <input type="number" class="form-control" id="year_published" name="year_published" required>
             </div>
             <div class="form-group">
@@ -88,11 +115,11 @@
         <div id="lateLoanList" class="row mt-3"></div>
     </div>
 
-    <footer class="footer mt-auto py-3 bg-light">
-        <div class="container">
-            <span class="text-muted"> Library</span>
-        </div>
-    </footer>
+    <div>
+        
+
+
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -121,7 +148,7 @@
                 const books = response.data;
 
                 const bookList = document.getElementById('bookList');
-                bookList.innerHTML = ''; // Clear the book list before appending new data
+                bookList.innerHTML = ''; // Clear 
                 books.forEach(book => {
                     const bookDiv = document.createElement('div');
                     bookDiv.classList.add('col-md-3', 'book');
@@ -152,7 +179,7 @@
                 });
 
                 alert(response.data.message);
-                fetchBooks(); // Refresh the book list after removing a book
+                fetchBooks(); // Refresh 
             } catch (error) {
                 alert(error.response.data.message);
             }
@@ -169,7 +196,7 @@
 
                 const users = response.data;
                 const userList = document.getElementById('userList');
-                userList.innerHTML = ''; // Clear the list before appending new data
+                userList.innerHTML = ''; // Clear 
                 users.forEach(user => {
                     const userDiv = document.createElement('div');
                     userDiv.classList.add('col-md-3', 'user');
@@ -198,14 +225,16 @@
 
                 const loans = response.data;
                 const loanedList = document.getElementById('loanedList');
-                loanedList.innerHTML = ''; // Clear the list before appending new data
+                loanedList.innerHTML = ''; // Clear 
                 loans.forEach(loan => {
                     const loanDiv = document.createElement('div');
                     loanDiv.classList.add('col-md-3', 'loan');
                     loanDiv.innerHTML = `
                         <h3>Loan ID: ${loan.id}</h3>
                         <p>User: ${loan.user_name}</p>
-                        <p>Book: ${loan.book_name}</p>
+                        <p
+
+>Book: ${loan.book_name}</p>
                         <p>Author: ${loan.author}</p>
                         <p>Loan Date: ${loan.loan_date}</p>
                         <p>Return Date: ${loan.return_date}</p>
@@ -228,7 +257,7 @@
 
                 const loans = response.data;
                 const lateLoanList = document.getElementById('lateLoanList');
-                lateLoanList.innerHTML = ''; // Clear the list before appending new data
+                lateLoanList.innerHTML = ''; // Clear 
                 loans.forEach(loan => {
                     const loanDiv = document.createElement('div');
                     loanDiv.classList.add('col-md-3', 'loan');
@@ -286,3 +315,4 @@
     </script>
 </body>
 </html>
+
